@@ -20,6 +20,13 @@ android {
     }
 }
 
+repositories {
+    jcenter()
+    maven {
+        url  'http://dl.bintray.com/akha/firebomb'
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -27,6 +34,8 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
+    compile 'firebomb:core:0.2.0'
+    provided 'com.google.firebase:firebase-database:9.4.0'
 }
 
 apply plugin: 'com.github.dcendents.android-maven'
