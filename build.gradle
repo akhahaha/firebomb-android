@@ -1,14 +1,25 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+import java.text.SimpleDateFormat
+ext.buildVersion = project.hasProperty("RELEASE_VERSION") ? RELEASE_VERSION :
+        new SimpleDateFormat("yyyy-MM-dd\'T\'HH-mm-ss").format(new Date())
+println "Building $buildVersion"
+
 buildscript {
     repositories {
         jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.0'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.1'
+
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
+
+ext.bintrayUser = BINTRAY_USER
+ext.bintrayKey = BINTRAY_API_KEY
 
 allprojects {
     group project.group

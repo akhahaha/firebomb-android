@@ -28,3 +28,62 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
 }
+
+apply plugin: 'com.github.dcendents.android-maven'
+task createPom {
+        pom {
+            project {
+                packaging 'aar'
+                name = project.packageName
+                description = project.description
+                url = project.websiteUrl
+            }
+        }.writeTo("$buildDir/poms/pom-default.xml")
+}
+build.dependsOn createPom
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+afterEvaluate {
+    javadoc.classpath += files(android.libraryVariants.collect { variant ->
+        variant.javaCompile.classpath.files
+    })
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+apply plugin: 'com.jfrog.bintray'
+bintray {
+    user = bintrayUser
+    key = bintrayKey
+    configurations = ['archives']
+
+    pkg {
+        repo = project.group
+        name = project.packageName
+        websiteUrl = project.websiteUrl
+        issueTrackerUrl = project.issueTrackerUrl
+        licenses = [project.license]
+        vcsUrl = project.vcsUrl
+        githubRepo = project.githubRepo
+        publicDownloadNumbers = true
+        publish = true
+        override = true
+    }
+}
